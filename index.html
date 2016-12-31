@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<meta charset="UTF-8">
+<title>Управление отладкой</title>
+</head>
+<body>
+Запустить отладку для указанных чатов:<br/>
+<input id="chats" /><button id="confirmDebug">Применить</button><br/>
+Активные чаты:<br/>
+<pre id="activeChats"></pre><br/>
+<table id="req"><TR><TH>Сообщение</TH><TH>Ответ localhost</TH></TR>
+</table>
+</body>
+<script>
+var longPooling;
+var localDebugger = "http://localhost/botSerial/hook.php";
+var updateActiveChats = function(){
+	$.get( "?debug=getActiveChats", function( data ) { $("#activeChats").html( data ); } );
+};
+longPooling = function(){
+	$.get( "?debug=longPooling", function( data ) {
+			$.post( localDebugger, data, function( data2 ) {
+					try {
+						json1 = JSON.parse( data );
+						data = JSON.stringify( json1, null, 2 );
+					} catch(e) {};
+					$("#req tr:first-child").after( "<TR><TD><PRE>"+data+"</PRE></TD><TD>"+data2+"</TD></TR>" ) 
+				} );
+			longPooling();
+		} ).fail( function(){
+			console.log( "failed pooling" );
+			longPooling();
+		} );
+};
+$( document ).ready( function() {
+	$.get( "?debug=getDebugChats", function( data ) { $("#chats").val( data ); } );
+	$( "#confirmDebug" ).on( "click", function(){
+		$.post( "?debug=start", {chats:$("#chats").val()}, function(){} );
+	} );
+	updateActiveChats();
+	window.setInterval( updateActiveChats, 5000);
+	longPooling();
+} );
+</script>
+</html>
