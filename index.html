@@ -16,7 +16,7 @@
 </body>
 <script>
 var longPooling;
-var localDebugger = "http://localhost/botSerial/hook.php";
+var localDebugger = "http://localhost/bot/hook.php";
 var updateActiveChats = function(){
 	$.get( "?debug=getActiveChats", function( data ) { $("#activeChats").html( data ); } );
 };
