@@ -8,6 +8,7 @@
 <body>
 Запустить отладку для указанных чатов:<br/>
 <input id="chats" /><button id="confirmDebug">Применить</button><br/>
+<a href="?debug=showLog" target="_blank">Показать лог</a> (если включен) <BUTTON id="clearLog">Очистить лог</BUTTON><br/>
 Активные чаты:<br/>
 <pre id="activeChats"></pre><br/>
 <table id="req"><TR><TH>Сообщение</TH><TH>Ответ localhost</TH></TR>
@@ -42,6 +43,9 @@ $( document ).ready( function() {
 	updateActiveChats();
 	window.setInterval( updateActiveChats, 5000);
 	longPooling();
+	$( "#clearLog" ).on( "click", function(){
+		$.get( "?debug=clearLog", function(){alert("Лог очищен");});
+	});
 } );
 </script>
 </html>
